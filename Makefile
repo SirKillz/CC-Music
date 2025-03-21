@@ -5,7 +5,7 @@ NETWORK=cc_music_net
 VOLUME_STORAGE=mysql_data:/var/lib/mysql
 VOLUME_APP=storage_data:/data/files # for reading and writing files
 VOLUME_CODE_MAC=/Users/nick/VSCodeProjects/CC-Music/src/cc_music:/app/cc_music # for tracking code changes
-VOLUME_CODE_WINDOWS=placeholder # for tracking code changes
+VOLUME_CODE_WINDOWS="C:/Users/sirki/Desktop/VS Code/CC-Music/src/cc_music:/app/cc_music" # for tracking code changes
 
 # Build the containers
 build:
