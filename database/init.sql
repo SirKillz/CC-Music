@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS videos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    video_id VARCHAR(255) UNIQUE NOT NULL,
+    video_title VARCHAR(255) NOT NULL,
+    file_path VARCHAR(255) NOT NULL
+);

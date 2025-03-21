@@ -1,0 +1,5 @@
+.venv
+/debugging
+/src/cc_music.egg-info
+**/__pycache__/
+*.env

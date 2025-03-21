@@ -1,0 +1,20 @@
+Create the network:
+docker network create cc_music_net
+
+Build the storage container:
+docker build -t storage-container -f docker/Dockerfile.storage .
+
+Run the storage container:
+docker run -d --name storage-container --network cc_music_net --env-file .env -p 3306:3306 -v mysql_data:/var/lib/mysql storage-container
+
+Connect to the storage container for mysql
+docker exec -it storage-container mysql -u root -p
+
+Switch to the database:
+USE storage_db;
+
+Issue the command to insert data:
+INSERT INTO videos (video_id, video_title, file_path) VALUES ("test123", "Persistance Test", "/data/files/test123.dfpw");
+
+Run the app container:
+docker run -d --name app-container --network cc_music_net --env-file .env -p 8000:8000 -v storage_data:/data/files app-container

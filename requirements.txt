@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+yt-dlp
+sqlalchemy
+pymysql
+cryptography
+httpx
+setuptools
