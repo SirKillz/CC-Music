@@ -7,8 +7,9 @@ local dfpwm = require("cc.audio.dfpwm")
 local decoder = dfpwm.make_decoder()
 
 -- Your public FastAPI + ngrok URL
-local apiEndpoint = "https://4da2-2601-244-417c-22d0-d07c-70fe-bbfa-60b8.ngrok-free.app/get-music"
-local youtubeURL = "https://www.youtube.com/watch?v=yMBFdtRbFD0"
+local apiEndpoint = "https://still-close-bobcat.ngrok-free.app/get-music"
+print("Enter YouTube video URL:")
+local youtubeURL = read()
 local requestURL = apiEndpoint .. "?video_url=" .. textutils.urlEncode(youtubeURL)
 
 print("Requesting audio from API...")
