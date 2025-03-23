@@ -38,5 +38,7 @@ services:
       - ../.env
 
 volumes:
-  mysql_data:
   storage_data:
+    name: storage_data
+  mysql_data:
+    name: mysql_data
