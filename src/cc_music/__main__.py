@@ -7,8 +7,7 @@ import httpx
 from cc_music.database.query_servicer import QueryServicer
 from cc_music.helpers import extract_video_id, read_dfpwm_file, write_dfpwm_file, write_mp3_file
 from cc_music.ffmpeg import convert_to_dfpwm
-from cc_music.routes.get_library import get_library_router
-from cc_music.routes.get_song import get_song_router
+from cc_music.routes import get_library_router, get_song_router, request_song_router
 
 app = FastAPI()
 
@@ -69,3 +68,4 @@ async def get_music(video_url: str):
 
 app.include_router(router=get_library_router)
 app.include_router(router=get_song_router)
+app.include_router(router=request_song_router)
