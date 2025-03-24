@@ -23,7 +23,7 @@ class QueryServicer(Database):
             return video
         
     def get_video_library(self, page: int = 1):
-        items_per_page = 10
+        items_per_page = 8
         offset = (page - 1) * items_per_page
         with self.Session() as session:
             result = session.query(Videos).offset(offset).limit(items_per_page).all()
