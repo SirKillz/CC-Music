@@ -4,10 +4,11 @@ local dfpwm = require("cc.audio.dfpwm")
 local decoder = dfpwm.make_decoder()
 local monitor = peripheral.find("monitor")
 
+local width, height = monitor.getSize()
+
 -- Capture the command-line arguments into a table.
 local args = { ... }
 
--- You can then extract them by index:
 local title = args[1]
 local video_id = args[2]
 local file_path = args[3]
@@ -28,20 +29,56 @@ function getSongContent()
     return response
 end
 
-function playSong(songData)
+function createButton(text, color, y)
+    monitor.setCursorPos(getHorizonCenter(text, y))
+    local xMin = monitor.getCursorPos()
+    monitor.setBackgroundColor(color)
+    monitor.write(text)
+    local xMax = monitor.getCursorPos()
+
+    local position = {
+        xMin = xMin,
+        xMax = xMax,
+        y = y
+    }
+
+    return position
+end
+
+-- This function will continuously read and play audio.
+function audioLoop(songData)
     while true do
         local chunk = songData.read(16 * 1024)
         if not chunk then break end
-    
+
         local decoded = decoder(chunk)
-    
         while not speaker.playAudio(decoded) do
             os.pullEvent("speaker_audio_empty")
         end
     end
 end
 
-function displayPlayingSong(title, video_id, file_path)
+-- This function waits for the stop button to be pressed.
+function waitForStop(xMin, xMax, stopY)
+    while true do
+        local event, side, x, y = os.pullEvent("monitor_touch")
+        if x >= xMin and x <= xMax and y == stopY then
+            return "stop"
+        end
+    end
+end
+
+-- This function uses parallel.waitForAny to run both audioLoop and waitForStop concurrently.
+function playSong(songData, xMin, xMax, stopY)
+    parallel.waitForAny(
+        function() audioLoop(songData) end,
+        function() waitForStop(xMin, xMax, stopY) end
+    )
+    -- When the stop button is pressed (or audio finishes), return to displayHome:
+    shell.run("displayHome")
+end
+
+function displayPlayingSong(title)
     writeHeader("Now playing:", 1)
     writeHeader(title, 3)
 end
@@ -54,14 +91,11 @@ function main()
 
     monitor.setBackgroundColor(colors.black)
     monitor.clear()
-    displayPlayingSong(title, video_id, file_path)
+    displayPlayingSong(title)
 
-    -- Use the variables as needed.
-    print("Title:", title)
-    print("Video ID:", video_id)
-    print("File Path:", file_path)
+    local stopButtonPosition = createButton("Stop", colors.red, height)
     local songData = getSongContent()
-    playSong(songData)
+    playSong(songData, stopButtonPosition.xMin, stopButtonPosition.xMax, stopButtonPosition.y)
 end
 
 main()
