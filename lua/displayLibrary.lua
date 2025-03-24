@@ -3,6 +3,8 @@ local currentYPOS = 1
 local domain = "still-close-bobcat.ngrok-free.app"
 local page = 1
 
+local width, height = monitor.getSize()
+
 function getHorizonCenter(text, y)
     local width, height = monitor.getSize()
     local x = math.floor((width - string.len(text)) / 2)
@@ -71,6 +73,7 @@ function main()
     writeHeader("Select a song to play!")
     local videosTable = getVideosTable()
     writeSongList(videosTable)
+    local backButton = createButton("Back", colors.red, height)
 
     local waitingForSelection = true
     while waitingForSelection do
@@ -83,6 +86,11 @@ function main()
                 print("File Path: " .. info.file_path)
                 shell.run("playSong", '"' .. title .. '"', info.video_id, info.file_path)
             end
+        end
+
+        if x >= backButton.xMin and x <= backButton.xMax and y == backButton.y then
+            waitingForSelection = false
+            shell.run("displayHome")
         end
     end
 end
