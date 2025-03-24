@@ -50,7 +50,7 @@ def process_song_in_background(video_url: str, video_id: str):
 
 request_song_router = APIRouter(prefix="/v1")
 
-@request_song_router.post("/request-song")
+@request_song_router.post("/request/song")
 async def get_music(video_url: str, background_tasks: BackgroundTasks):
     extracted_video_id = extract_video_id(video_url)
 

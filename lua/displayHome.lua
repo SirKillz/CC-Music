@@ -43,7 +43,7 @@ function main()
             shell.run("displayLibrary")
         elseif x >= requestSongPosition.xMin and x <= requestSongPosition.xMax and y == requestSongPosition.y then
             waitingForSelection = false
-            shell.run("requestSong.lua")
+            shell.run("requestSong")
         end
     end
 end
