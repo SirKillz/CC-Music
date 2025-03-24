@@ -7,7 +7,7 @@ import yt_dlp
 import httpx
 
 from cc_music.database.query_servicer import QueryServicer
-from cc_music.helpers import extract_video_id, write_dfpwm_file, write_mp3_file
+from cc_music.helpers import extract_video_id, write_dfpwm_file, clean_video_title
 from cc_music.ffmpeg import convert_to_dfpwm
 
 query_service = QueryServicer()
@@ -29,12 +29,6 @@ def process_song_in_background(video_url: str, video_id: str):
 
     print("Download complete.", flush=True)
 
-    # Save the MP3 file to the volume for testing purposes
-    buffer.seek(0)
-    mp3_file_path = f"/data/files/{video_id}.mp3"
-    write_mp3_file(mp3_file_path, buffer)
-    print("MP3 file written to storage.", flush=True)
-
     # Reset buffer position for conversion
     buffer.seek(0)
     print("Starting conversion to DFPWM...", flush=True)
@@ -42,7 +36,7 @@ def process_song_in_background(video_url: str, video_id: str):
     print("Conversion complete.", flush=True)
 
     # Add video to database with the correct file extension (.dfpwm)
-    video_title = info["title"]
+    video_title = clean_video_title(info["title"])
     file_path = f"/data/files/{video_id}.dfpwm"
     query_service.create_video(video_id, video_title, file_path)
     write_dfpwm_file(file_path, dfpwm_audio)
