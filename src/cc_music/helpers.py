@@ -3,6 +3,9 @@ from io import BytesIO
 def extract_video_id(url: str) -> str:
     return url.split("=")[1]
 
+def clean_video_title(video_title: str) -> str:
+    return video_title.replace('"', "")
+
 def read_dfpwm_file(file_path: str) -> BytesIO:
     with open(file_path, "rb") as file:
         return BytesIO(file.read())
