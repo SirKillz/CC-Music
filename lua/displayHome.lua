@@ -40,7 +40,7 @@ function main()
         local event, button, x, y = os.pullEvent("monitor_touch")
         if x >= viewLibraryPosition.xMin and x <= viewLibraryPosition.xMax and y == viewLibraryPosition.y then
             waitingForSelection = false
-            shell.run("displayLibrary")
+            shell.run("displayLibrary", "1")
         elseif x >= requestSongPosition.xMin and x <= requestSongPosition.xMax and y == requestSongPosition.y then
             waitingForSelection = false
             shell.run("requestSong")
