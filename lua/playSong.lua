@@ -1,3 +1,6 @@
+local ccstrings = require "cc.strings"
+
+
 local domain = "https://still-close-bobcat.ngrok-free.app"
 local speaker = peripheral.find("speaker")
 local dfpwm = require("cc.audio.dfpwm")
@@ -80,8 +83,15 @@ end
 
 function displayPlayingSong(title)
     writeHeader("Now playing:", 1)
-    writeHeader(title, 3)
+    local wrappedTitle = ccstrings.wrap(title, width)
+    local lineNum = 3  -- start on line 3
+    for i, line in ipairs(wrappedTitle) do
+        monitor.setCursorPos(1, lineNum)
+        monitor.write(line)
+        lineNum = lineNum + 1
+    end
 end
+
 
 function main()
     if not title or not video_id or not file_path then
