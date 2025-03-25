@@ -1,9 +1,11 @@
 local monitor = peripheral.find("monitor")
+local width, height = monitor.getSize()
 local currentYPOS = 1
 local domain = "still-close-bobcat.ngrok-free.app"
-local page = 1
 
-local width, height = monitor.getSize()
+-- Capture the command-line arguments into a table.
+local args = { ... }
+local page = tonumber(args[1])
 
 function getHorizonCenter(text, y)
     local width, height = monitor.getSize()
@@ -40,8 +42,8 @@ function getVideosTable()
     return videos_table
 end
 
-function createButton(text, color, y)
-    monitor.setCursorPos(getHorizonCenter(text, y))
+function createButton(text, color, x, y)
+    monitor.setCursorPos(x, y)
     xMin = monitor.getCursorPos()
     monitor.setBackgroundColor(color)
     monitor.write(text)
@@ -54,6 +56,21 @@ function createButton(text, color, y)
     }
 
     return position
+end
+
+function createPaginationButtons()
+    local nextButton = createButton("Next", colors.green, width - 6, height)
+    local prevButton = nil
+
+    if page > 1 then
+        prevButton = createButton("Prev", colors.orange, width - 12, height)
+    end
+
+    return {
+        nextButton = nextButton,
+        prevButton = prevButton
+    }
+
 end
 
 function writeSongList(videos_table)
@@ -73,7 +90,10 @@ function main()
     writeHeader("Select a song to play!")
     local videosTable = getVideosTable()
     writeSongList(videosTable)
-    local backButton = createButton("Back", colors.red, height)
+    local homeButton = createButton("Home", colors.red, 1, height)
+    local paginationButtons = createPaginationButtons()
+    local nextButton = paginationButtons.nextButton
+    local prevButton = paginationButtons.prevButton
 
     local waitingForSelection = true
     while waitingForSelection do
@@ -88,9 +108,22 @@ function main()
             end
         end
 
-        if x >= backButton.xMin and x <= backButton.xMax and y == backButton.y then
+        -- check if the home button was clicked
+        if x >= homeButton.xMin and x <= homeButton.xMax and y == homeButton.y then
             waitingForSelection = false
             shell.run("displayHome")
+        end
+
+        -- check if the next button was clicked
+        if x >= nextButton.xMin and x <= nextButton.xMax and y == nextButton.y then
+            waitingForSelection = false
+            shell.run("displayLibrary", tostring(page + 1))
+        end
+
+        -- check if the prev button was clicked
+        if x >= prevButton.xMin and x <= prevButton.xMax and y == prevButton.y then
+            waitingForSelection = false
+            shell.run("displayLibrary", tostring(page - 1))
         end
     end
 end
